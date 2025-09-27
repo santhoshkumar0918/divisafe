@@ -1,5 +1,5 @@
 [profile.default]
-src = "src"
+src = "contracts"
 out = "out"
 libs = ["lib"]
 remappings = [
@@ -25,3 +25,5 @@ via_ir = false
 
 # Testing
 verbosity = 2
+ffi = false
+fs_permissions = [{ access = "read-write", path = "./" }]

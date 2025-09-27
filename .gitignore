@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 contracts/lib/forge-std
 .gitignore
+contracts/lib/forge-std
+contracts/package-lock.json

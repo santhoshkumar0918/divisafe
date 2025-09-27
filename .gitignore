@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/frontend/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -39,7 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# forge / foundry
 contracts/lib/forge-std
-.gitignore
-contracts/lib/forge-std
-contracts/package-lock.json
+
+# optional (ignore package-lock if you don’t want it tracked)
+# contracts/package-lock.json

@@ -60,6 +60,17 @@ const NETWORK_CONFIGS: NetworkConfigs = {
     defaultAirdropAmount: ethers.parseUnits("50", 18),
     ownerAddress: "0x0000000000000000000000000000000000000000", // Will use first signer
     gasLimit: 8000000
+  },
+  celo_sepolia: {
+    hubAddress: "0x1234567890123456789012345678901234567890", // Placeholder hub address
+    scopeValue: "anonymous_support_platform_celo_sepolia",
+    verificationConfigId: "0x1234567890123456789012345678901234567890123456789012345678901234",
+    validityPeriod: 30 * 24 * 60 * 60, // 30 days for testing
+    airdropTokenAddress: "0x0000000000000000000000000000000000000000", // Will deploy mock token
+    defaultAirdropAmount: ethers.parseUnits("100", 18), // 100 tokens (assuming 18 decimals)
+    ownerAddress: "0x0000000000000000000000000000000000000000", // Will use deployer address
+    gasPrice: "1000000000", // 1 gwei (Celo has low gas prices)
+    gasLimit: 5000000
   }
 };
 

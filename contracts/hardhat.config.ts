@@ -27,7 +27,7 @@ const config: HardhatUserConfig = {
     },
     celo_sepolia: {
       url: "https://forno.celo-sepolia.celo-testnet.org",
-      chainId: 1115220, // 0xaa044c in hex
+      chainId: 11142220, // Correct Celo Sepolia chain ID
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     celo_mainnet: {
@@ -44,7 +44,7 @@ const config: HardhatUserConfig = {
     customChains: [
       {
         network: "celo_sepolia",
-        chainId: 1115220,
+        chainId: 11142220,
         urls: {
           apiURL: "https://api-sepolia.celoscan.io/api",
           browserURL: "https://sepolia.celoscan.io",

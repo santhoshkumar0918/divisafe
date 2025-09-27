@@ -5,21 +5,33 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Warm, supportive color palette
+        // Dark theme colors matching your UI design
+        dark: {
+          bg: '#0a0e1a',
+          surface: '#1a1f2e',
+          card: '#252b3d',
+          border: '#2d3748',
+          text: {
+            primary: '#ffffff',
+            secondary: '#a0aec0',
+            muted: '#718096'
+          }
+        },
         primary: {
-          50: '#fef7f0',
-          100: '#fdeee0',
-          200: '#fad9c1',
-          300: '#f6be97',
-          400: '#f0996b',
-          500: '#ea7c47',
-          600: '#dc6332',
-          700: '#b74d28',
-          800: '#924026',
-          900: '#763622',
+          50: '#e6f7ff',
+          100: '#bae7ff',
+          200: '#91d5ff',
+          300: '#69c0ff',
+          400: '#40a9ff',
+          500: '#1890ff',
+          600: '#096dd9',
+          700: '#0050b3',
+          800: '#003a8c',
+          900: '#002766',
         },
         secondary: {
           50: '#f0f9f4',
@@ -33,18 +45,6 @@ module.exports = {
           800: '#1f5130',
           900: '#1c4329',
         },
-        neutral: {
-          50: '#fafaf9',
-          100: '#f4f4f3',
-          200: '#e5e5e4',
-          300: '#d1d1cf',
-          400: '#b0b0ad',
-          500: '#8f8f8b',
-          600: '#737370',
-          700: '#5d5d5a',
-          800: '#4f4f4c',
-          900: '#434340',
-        },
         accent: {
           50: '#fff7ed',
           100: '#ffedd5',
@@ -56,10 +56,31 @@ module.exports = {
           700: '#c2410c',
           800: '#9a3412',
           900: '#7c2d12',
+        },
+        // Chat colors
+        chat: {
+          user: '#1890ff',
+          ai: '#2d3748',
+          system: '#38a169'
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'pulse-slow': 'pulse 3s infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
     },
   },

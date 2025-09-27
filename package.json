@@ -3,16 +3,14 @@
   "version": "1.0.0",
   "description": "Privacy-first support platform with Self Protocol verification and birthday airdrops",
   "scripts": {
-    "build": "forge build",
-    "test": "forge test -vv",
-    "test:gas": "forge test --gas-report",
-    "deploy:testnet": "forge script contracts/deploy/DeployAnonymousSupport.s.sol:DeployAnonymousSupport --rpc-url $CELO_TESTNET_RPC --broadcast --verify",
-    "deploy:mainnet": "forge script contracts/deploy/DeployAnonymousSupport.s.sol:DeployAnonymousSupport --rpc-url $CELO_MAINNET_RPC --broadcast --verify",
-    "install:deps": "forge install",
-    "clean": "forge clean",
-    "format": "forge fmt",
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network celo_testnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network celo_mainnet",
+    "clean": "hardhat clean",
     "lint": "solhint 'contracts/**/*.sol'",
-    "coverage": "forge coverage"
+    "node": "hardhat node"
   },
   "keywords": [
     "self-protocol",
@@ -25,10 +23,13 @@
   "author": "Anonymous Support Team",
   "license": "MIT",
   "devDependencies": {
-    "solhint": "^4.0.0"
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0",
+    "solhint": "^4.0.0",
+    "dotenv": "^16.0.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.0",
-    "@selfxyz/contracts-v2": "latest"
+    "@selfxyz/contracts": "^1.2.3"
   }
 }

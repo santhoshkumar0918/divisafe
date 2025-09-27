@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
-import { SelfVerificationRoot } from "@selfxyz/contracts-v2/contracts/abstract/SelfVerificationRoot.sol";
-import { ISelfVerificationRoot } from "@selfxyz/contracts-v2/contracts/interfaces/ISelfVerificationRoot.sol";
-import { IIdentityVerificationHubV2 } from "@selfxyz/contracts-v2/contracts/interfaces/IIdentityVerificationHubV2.sol";
-import { SelfStructs } from "@selfxyz/contracts-v2/contracts/libraries/SelfStructs.sol";
-import { SelfUtils } from "@selfxyz/contracts-v2/contracts/libraries/SelfUtils.sol";
+import {SelfVerificationRoot} from "@selfxyz/contracts/contracts/abstract/SelfVerificationRoot.sol";
+import {ISelfVerificationRoot} from "@selfxyz/contracts/contracts/interfaces/ISelfVerificationRoot.sol";
+import {IIdentityVerificationHubV2} from "@selfxyz/contracts/contracts/interfaces/IIdentityVerificationHubV2.sol";
+import {SelfStructs} from "@selfxyz/contracts/contracts/libraries/SelfStructs.sol";
+import {SelfUtils} from "@selfxyz/contracts/contracts/libraries/SelfUtils.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -22,10 +22,7 @@ contract AnonymousSupportPlatform is SelfVerificationRoot, ERC721, Ownable {
     using ECDSA for bytes32;
     using SafeERC20 for IERC20;
 
-    /*//////////////////////////////////////////////////////////////
-                             BADGE TYPES
-    //////////////////////////////////////////////////////////////*/
-    
+  
     enum BadgeType {
         HUMAN,           // Basic human verification
         ADULT,           // 18+ verification  

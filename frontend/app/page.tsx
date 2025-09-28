@@ -117,6 +117,13 @@ export default function HomePage() {
                   <Link href="/support-rooms" className="text-gray-300 hover:bg-white/10 rounded-lg px-4 py-3 transition-colors duration-200 font-medium">Support Rooms</Link>
                   <Link href="/ai-support" className="text-gray-300 hover:bg-white/10 rounded-lg px-4 py-3 transition-colors duration-200 font-medium">AI Support</Link>
                   <Link href="/counselors" className="text-gray-300 hover:bg-white/10 rounded-lg px-4 py-3 transition-colors duration-200 font-medium">Counselors</Link>
+                  <button
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="flex items-center space-x-2 text-gray-300 hover:bg-white/10 rounded-lg px-4 py-3 transition-colors duration-200 font-medium w-full text-left"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Login</span>
+                  </button>
                 </nav>
               </motion.div>
             )}
@@ -198,6 +205,43 @@ export default function HomePage() {
           </div>
         </footer>
       </div>
+
+      {/* Login Modal */}
+      <AnimatePresence>
+        {isLoginModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setIsLoginModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-gray-900 rounded-3xl border border-white/10 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-white">Secure Login</h2>
+                  <button
+                    onClick={() => setIsLoginModalOpen(false)}
+                    className="p-2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <MockQRCodePassportLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={handleLoginError}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -264,6 +308,249 @@ function FooterLinks({ title, links }: { title: string, links: Record<string, st
           </li>
         ))}
       </ul>
+    </div>
+  )
+}
+
+interface MockQRCodePassportLoginProps {
+  onSuccess: (profile: any) => void
+  onError: (error: string) => void
+}
+
+function MockQRCodePassportLogin({ onSuccess, onError }: MockQRCodePassportLoginProps) {
+  const [selectedMethod, setSelectedMethod] = useState<'qr' | 'manual' | null>(null)
+  const [verificationStatus, setVerificationStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle')
+  const [progress, setProgress] = useState(0)
+  const [currentStep, setCurrentStep] = useState('')
+  const [anonymousId, setAnonymousId] = useState('')
+
+  // Simulate verification steps
+  const verificationSteps = [
+    'Initializing verification process...',
+    'Scanning document security features...',
+    'Extracting personal information...',
+    'Validating document authenticity...',
+    'Cross-referencing with global databases...',
+    'Generating anonymous identity...',
+    'Minting verification badge...',
+    'Finalizing secure login...'
+  ]
+
+  const generateAnonymousId = () => {
+    const prefix = 'anon_'
+    const random = Math.random().toString(36).substring(2, 15)
+    const timestamp = Date.now().toString(36)
+    return prefix + random + '_' + timestamp
+  }
+
+  const simulateVerification = async () => {
+    setVerificationStatus('processing')
+    setProgress(0)
+    setCurrentStep(verificationSteps[0])
+
+    for (let i = 0; i < verificationSteps.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 1500)) // 1.5 seconds per step
+      setProgress(((i + 1) / verificationSteps.length) * 100)
+      setCurrentStep(verificationSteps[i + 1] || 'Complete!')
+    }
+
+    // Generate anonymous ID and success
+    const newAnonymousId = generateAnonymousId()
+    setAnonymousId(newAnonymousId)
+
+    setTimeout(() => {
+      setVerificationStatus('success')
+      const profile = {
+        anonymousId: newAnonymousId,
+        verifiedAt: new Date().toISOString(),
+        verificationMethod: selectedMethod === 'qr' ? 'QR Code' : 'Manual Upload',
+        trustScore: Math.floor(Math.random() * 20) + 80, // 80-99%
+        badges: ['Verified Human', 'Anonymous Member']
+      }
+      onSuccess(profile)
+    }, 1000)
+  }
+
+  const handleMethodSelect = (method: 'qr' | 'manual') => {
+    setSelectedMethod(method)
+    setVerificationStatus('idle')
+    setProgress(0)
+  }
+
+  const handleStartVerification = () => {
+    if (selectedMethod) {
+      simulateVerification()
+    }
+  }
+
+  const resetProcess = () => {
+    setSelectedMethod(null)
+    setVerificationStatus('idle')
+    setProgress(0)
+    setCurrentStep('')
+    setAnonymousId('')
+  }
+
+  if (verificationStatus === 'success') {
+    return (
+      <div className="max-w-md mx-auto p-8 bg-green-900/20 border border-green-500/30 rounded-xl text-center">
+        <div className="w-16 h-16 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="w-8 h-8 text-green-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-green-400 mb-2">Verification Successful!</h3>
+        <p className="text-green-300 mb-4">Welcome! You've been assigned anonymous identity:</p>
+        <div className="bg-green-500/10 p-3 rounded-lg mb-4">
+          <code className="text-green-400 font-mono text-sm">{anonymousId}</code>
+        </div>
+        <p className="text-green-300 text-sm">Your privacy is protected. No personal information was stored.</p>
+        <button
+          onClick={resetProcess}
+          className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          Start New Session
+        </button>
+      </div>
+    )
+  }
+
+  if (verificationStatus === 'error') {
+    return (
+      <div className="max-w-md mx-auto p-8 bg-red-900/20 border border-red-500/30 rounded-xl text-center">
+        <div className="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+          <AlertCircle className="w-8 h-8 text-red-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-red-400 mb-2">Verification Failed</h3>
+        <p className="text-red-300 mb-4">We couldn't verify your identity. Please try again.</p>
+        <button
+          onClick={resetProcess}
+          className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {/* Method Selection */}
+      {!selectedMethod && (
+        <div className="bg-gray-800/50 rounded-xl p-8 border border-white/10">
+          <h3 className="text-2xl font-bold text-white mb-6 text-center">Choose Verification Method</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* QR Code Option */}
+            <button
+              onClick={() => handleMethodSelect('qr')}
+              className="bg-gray-700/50 hover:bg-gray-600/50 transition-colors p-6 rounded-lg border border-white/10 group"
+            >
+              <div className="text-center">
+                <div className="w-12 h-12 mx-auto bg-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Camera className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-white mb-2">QR Code Scan</h4>
+                <p className="text-gray-300 text-sm">Scan QR code with your mobile device for quick verification</p>
+              </div>
+            </button>
+
+            {/* Manual Upload Option */}
+            <button
+              onClick={() => handleMethodSelect('manual')}
+              className="bg-gray-700/50 hover:bg-gray-600/50 transition-colors p-6 rounded-lg border border-white/10 group"
+            >
+              <div className="text-center">
+                <div className="w-12 h-12 mx-auto bg-green-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Upload className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-white mb-2">Manual Upload</h4>
+                <p className="text-gray-300 text-sm">Upload your passport or ID document for verification</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Processing State */}
+      {selectedMethod && verificationStatus === 'processing' && (
+        <div className="bg-gray-800/50 rounded-xl p-8 border border-white/10">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 mx-auto bg-blue-600 rounded-full flex items-center justify-center mb-4">
+              <Loader2 className="w-8 h-8 text-white animate-spin" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              {selectedMethod === 'qr' ? 'Scanning QR Code...' : 'Processing Document...'}
+            </h3>
+            <p className="text-gray-300">Please wait while we verify your identity</p>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="flex justify-between text-sm text-gray-400 mb-2">
+              <span>Progress</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-3">
+              <div
+                className="bg-gradient-to-r from-teal-500 to-cyan-500 h-3 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Current Step */}
+          <div className="bg-gray-700/50 rounded-lg p-4">
+            <p className="text-gray-300 text-center">{currentStep}</p>
+          </div>
+
+          {/* Estimated Time */}
+          <div className="mt-4 text-center">
+            <p className="text-gray-400 text-sm">
+              Estimated time remaining: {Math.max(0, Math.ceil((100 - progress) / 100 * 12))} seconds
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Start Verification Button */}
+      {selectedMethod && verificationStatus === 'idle' && (
+        <div className="bg-gray-800/50 rounded-xl p-8 border border-white/10 text-center">
+          <div className="mb-6">
+            <div className="w-16 h-16 mx-auto bg-green-600 rounded-full flex items-center justify-center mb-4">
+              {selectedMethod === 'qr' ? (
+                <Camera className="w-8 h-8 text-white" />
+              ) : (
+                <Upload className="w-8 h-8 text-white" />
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">
+              Ready to {selectedMethod === 'qr' ? 'Scan QR Code' : 'Upload Document'}
+            </h3>
+            <p className="text-gray-300">
+              {selectedMethod === 'qr'
+                ? 'Point your camera at the QR code to begin verification'
+                : 'Select and upload your passport or ID document'}
+            </p>
+          </div>
+          <button
+            onClick={handleStartVerification}
+            className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105"
+          >
+            Start Verification Process
+          </button>
+          <button
+            onClick={() => setSelectedMethod(null)}
+            className="mt-4 text-gray-400 hover:text-white transition-colors"
+          >
+            ← Back to Method Selection
+          </button>
+        </div>
+      )}
+
+      {/* Initial State Instructions */}
+      {!selectedMethod && (
+        <div className="mt-6 text-center">
+          <p className="text-gray-400 text-sm">🔒 Your privacy is protected. No personal information is stored.</p>
+        </div>
+      )}
     </div>
   )
 }

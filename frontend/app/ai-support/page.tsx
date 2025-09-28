@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { asiOne } from '@/lib/asi-one'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { ArrowLeft, Send, Bot, User, Heart, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 
@@ -119,9 +118,8 @@ export default function AISupportPage() {
               </Link>
             </nav>
 
-            {/* Connect Wallet & Mobile Menu */}
-            <div className="flex items-center space-x-4">
-              <ConnectButton />
+            {/* Mobile Menu */}
+            <div className="flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"

@@ -1,6 +1,5 @@
 'use client'
 
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { UserProfile } from '@/components/UserProfile'
 import { MessageCircle, Users, Shield, Heart, Brain, Lock, Menu, X } from 'lucide-react'
 import Link from 'next/link'
@@ -41,9 +40,8 @@ export default function HomePage() {
               </Link>
             </nav>
 
-            {/* Connect Wallet & Mobile Menu */}
-            <div className="flex items-center space-x-4">
-              <ConnectButton />
+            {/* Mobile Menu */}
+            <div className="flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"

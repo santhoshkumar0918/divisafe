@@ -151,3 +151,4 @@ contracts/broadcast/
 
 # Local development
 .local
+bun.lock

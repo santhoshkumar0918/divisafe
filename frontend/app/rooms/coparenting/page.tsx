@@ -1,68 +1,48 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { Send, Home, ArrowLeft, Shield, User } from 'lucide-react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import TextareaAutosize from 'react-textarea-autosize'
 
-import { Send, Home } from 'lucide-react'
-
+// --- Interface remains the same ---
 interface Message {
   id: string
   content: string
-  sender: string
+  sender: string // 'Moderator', 'You', or a user hash for others
   timestamp: Date
-  anonymous: boolean
 }
+
+// --- Sample Data updated for clarity ---
+const sampleMessages: Message[] = [
+  { id: '1', content: "Welcome to the Co-Parenting support room. This is a safe space to share strategies and experiences focused on raising children collaboratively after separation. Please keep discussions respectful and child-focused.", sender: 'Moderator', timestamp: new Date(Date.now() - 300000) },
+  { id: '2', content: "Has anyone found a good app for sharing schedules and expenses? It's getting tough to manage over text.", sender: 'User_a7b3c', timestamp: new Date(Date.now() - 180000) },
+  { id: '3', content: "We've had a lot of success with OurFamilyWizard. It's a bit of an investment but it has everything in one place and keeps a legal record, which helps with accountability.", sender: 'User_f8d9e', timestamp: new Date(Date.now() - 120000) },
+  { id: '4', content: "That's a great tip. The accountability part is huge for us right now.", sender: 'User_a7b3c', timestamp: new Date(Date.now() - 60000) },
+]
 
 export default function CoParentingRoom() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
   useEffect(() => {
-    // Add some sample messages
-    const sampleMessages: Message[] = [
-      {
-        id: '1',
-        content: "Welcome to Co-Parenting support. Share tips, advice, and experiences about raising children together after separation. Remember: Children's wellbeing comes first.",
-        sender: 'Moderator',
-        timestamp: new Date(Date.now() - 300000),
-        anonymous: false
-      },
-      {
-        id: '2',
-        content: "How do you handle different parenting styles between households? My ex and I have very different approaches.",
-        sender: 'Anonymous User',
-        timestamp: new Date(Date.now() - 120000),
-        anonymous: true
-      },
-      {
-        id: '3',
-        content: "Focus on the big picture - consistency in values like respect, kindness, and responsibility. Small differences in rules are okay as long as children feel loved and secure in both homes.",
-        sender: 'Anonymous User',
-        timestamp: new Date(Date.now() - 60000),
-        anonymous: true
-      }
-    ]
     setMessages(sampleMessages)
   }, [])
 
   useEffect(() => {
-    scrollToBottom()
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return
+    if (!inputMessage.trim()) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputMessage,
       sender: 'You',
       timestamp: new Date(),
-      anonymous: true
     }
 
     setMessages(prev => [...prev, userMessage])
@@ -77,71 +57,113 @@ export default function CoParentingRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="h-screen w-screen bg-black text-gray-200 font-sans flex flex-col overflow-hidden">
+      <div className="absolute inset-0 z-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"></div>
 
-      
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Room Header */}
-        <div className="bg-slate-800 rounded-lg p-6 mb-6 border border-slate-700">
-          <div className="flex items-center space-x-4">
-            <div className="bg-orange-600 p-3 rounded-lg">
-              <Home className="w-6 h-6 text-white" />
+      {/* --- REDESIGNED HEADER --- */}
+      <header className="relative z-20 bg-black/50 backdrop-blur-xl border-b border-white/10 flex-shrink-0">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-4">
+              <Link href="/support-rooms" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group">
+                <ArrowLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
+                <span className="font-medium hidden sm:inline">All Rooms</span>
+              </Link>
+              <div className="h-6 w-px bg-white/20"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                  <Home className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">Co-Parenting Room</h1>
+                  <p className="text-gray-400 text-xs">Strategies for healthy co-parenting</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Co-Parenting</h1>
-              <p className="text-slate-300">Tips and advice for co-parenting</p>
+            <div className="flex items-center space-x-2 text-sm text-cyan-300">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>12 Active Members</span>
             </div>
           </div>
         </div>
-
-        {/* Chat Container */}
-        <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden border border-slate-700">
-          {/* Messages */}
-          <div className="h-96 overflow-y-auto p-6 space-y-4">
+      </header>
+      
+      {/* --- REDESIGNED CHAT AREA --- */}
+      <main className="flex-1 flex flex-col min-h-0 relative z-10">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="max-w-4xl mx-auto space-y-6">
             {messages.map((message) => (
-              <div key={message.id} className="flex justify-start">
-                <div className="max-w-xs lg:max-w-md">
-                  <div className="bg-slate-700 text-slate-100 px-4 py-3 rounded-lg">
-                    <div className="text-xs text-slate-400 mb-1">
-                      {message.sender} {message.anonymous && '(Anonymous)'}
-                    </div>
-                    <p className="text-sm leading-relaxed">{message.content}</p>
-                    <div className="text-xs text-slate-400 mt-2">
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ChatMessage key={message.id} message={message} />
             ))}
             <div ref={messagesEndRef} />
           </div>
+        </div>
 
-          {/* Input Area */}
-          <div className="border-t border-slate-700 p-4">
-            <div className="flex space-x-3">
-              <input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Share co-parenting tips..."
-                className="flex-1 bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 placeholder-slate-400"
-                disabled={isLoading}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={isLoading || !inputMessage.trim()}
-                className="bg-orange-600 hover:bg-orange-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center"
-              >
-                <Send className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-xs text-slate-400 mt-2">
-              👨‍👩‍👧‍👦 Children's wellbeing comes first. Keep discussions respectful and constructive.
-            </p>
+        <div className="bg-black/50 backdrop-blur-xl border-t border-white/10 p-4 sm:p-6 lg:p-8 flex-shrink-0">
+          <div className="max-w-4xl mx-auto flex items-end space-x-4">
+            <TextareaAutosize
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Share your thoughts respectfully..."
+              className="flex-1 bg-gray-900/50 border border-white/20 text-white px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 placeholder-gray-500 transition-all duration-300 resize-none"
+              maxRows={5}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!inputMessage.trim()}
+              className="w-12 h-12 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-full transition-all duration-300 transform hover:scale-110 disabled:hover:scale-100 flex items-center justify-center flex-shrink-0"
+            >
+              <Send className="w-5 h-5" />
+            </button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
+  )
+}
+
+// --- NEW, INTELLIGENT CHAT MESSAGE COMPONENT ---
+function ChatMessage({ message }: { message: Message }) {
+  const isYou = message.sender === 'You'
+  const isModerator = message.sender === 'Moderator'
+
+  const senderName = isYou ? 'You' : isModerator ? 'Moderator' : 'Anonymous Member'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className={`flex items-start gap-4 ${isYou ? 'justify-end' : 'justify-start'}`}
+    >
+      {/* Avatar */}
+      {!isYou && (
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isModerator ? 'bg-cyan-900/80 border-2 border-cyan-500' : 'bg-gray-800'}`}>
+          {isModerator ? <Shield className="h-5 w-5 text-cyan-400" /> : <User className="h-5 w-5 text-gray-400" />}
+        </div>
+      )}
+      
+      {/* Message Content */}
+      <div>
+        <div className={`flex items-baseline gap-2 ${isYou ? 'justify-end' : 'justify-start'}`}>
+            <p className={`text-sm font-semibold ${isModerator ? 'text-cyan-400' : 'text-gray-300'}`}>
+                {senderName}
+            </p>
+            <p className="text-xs text-gray-500">
+                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </p>
+        </div>
+        <div className={`mt-1 px-5 py-3 rounded-2xl max-w-md lg:max-w-lg ${
+            isYou 
+              ? 'bg-cyan-900/80 text-white rounded-br-none' 
+              : isModerator
+              ? 'bg-gray-900/50 text-gray-200 rounded-bl-none border border-cyan-500/30'
+              : 'bg-gray-900/50 text-gray-200 rounded-bl-none'
+          }`}>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        </div>
+      </div>
+    </motion.div>
   )
 }

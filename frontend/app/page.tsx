@@ -84,7 +84,16 @@ export default function HomePage() {
                 <NavLink href="/counselors">Counselors</NavLink>
               </nav>
 
-              <div className="flex items-center">
+              <div className="flex items-center space-x-4">
+                {/* Login Button */}
+                <button
+                  onClick={() => setIsLoginModalOpen(true)}
+                  className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Login</span>
+                </button>
+                
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   className="md:hidden p-2 text-gray-300 hover:text-white transition-colors z-50"
